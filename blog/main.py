@@ -57,16 +57,7 @@ def update_blog_by_id(id, request: Blog, db: Session = Depends(get_db)):
     # update individual blog attributes
     for key, value in request.__dict__.items():
         setattr(blog, key, value)
-    
-    # blog.update(request)
-    
-    # if request.title:
-    #     blog.title = request.title
-    # if request.body:
-    #     blog.body = request.body
-    
-    # blog.update(request)
-    
+       
     db.commit()
     
     return 'Blog details successfuly updated'
