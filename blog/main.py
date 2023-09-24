@@ -1,10 +1,12 @@
+# from typing import List
+
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 from sqlalchemy.orm import Session
 
 from . import models
 
 from .database import engine, SessionLocal 
-from .schemas import Blog
+from .schemas import Blog, ShowBlog
 
 
 app = FastAPI()
@@ -32,13 +34,13 @@ def create_blog(request: Blog, db: Session = Depends(get_db)):
     
     return new_blog
 
-@app.get('/blog')
+@app.get('/blog', response_model=list[ShowBlog])
 def get_blogs(db: Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     
     return blogs
 
-@app.get('/blog/{id}', status_code=status.HTTP_200_OK)
+@app.get('/blog/{id}', status_code=status.HTTP_200_OK, response_model=ShowBlog)
 def get_blog_by_id(id, response: Response, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -52,7 +54,10 @@ def get_blog_by_id(id, response: Response, db: Session = Depends(get_db)):
 def update_blog_by_id(id, request: Blog, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Blog with the id of {id} not found')
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'Blog with the id of {id} not found'
+        )
     
     # update individual blog attributes
     for key, value in request.__dict__.items():
@@ -64,10 +69,14 @@ def update_blog_by_id(id, request: Blog, db: Session = Depends(get_db)):
     
 
 @app.delete('/blog/{id}', status_code=status.HTTP_204_NO_CONTENT)
-def delete_blog_by_id(id, request: Blog, db: Session = Depends(get_db)):
-    blog = db.query(models.Blog).filter(models.Blog.id == id)
-    if not blog.first():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'blog with the id of {id} not found')
+def delete_blog_by_id(id, db: Session = Depends(get_db)):
+    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+    if not blog:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'blog with the id of {id} not found'
+        )
+    
     blog.delete(synchronize_session=False)
     
     db.commit()
