@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from . import models
 
 from .database import engine, SessionLocal 
-from .schemas import Blog, ShowBlog
+from .schemas import Blog, ShowBlog, User
 
 
 app = FastAPI()
@@ -83,3 +83,10 @@ def delete_blog_by_id(id, db: Session = Depends(get_db)):
     
     return 'Blog post successfully deleted!'
     
+    
+
+# users
+@app.post('/user', status_code=status.HTTP_201_CREATED)
+def create_user(request: User):
+    return request
+
