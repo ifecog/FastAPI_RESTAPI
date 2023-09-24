@@ -1,12 +1,11 @@
-# from typing import List
-
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 from sqlalchemy.orm import Session
 
 from . import models
 
 from .database import engine, SessionLocal 
-from .schemas import Blog, ShowBlog, User
+from .schemas import Blog, ShowBlog, User, ShowUser
+from .hashing import Hash
 
 
 app = FastAPI()
@@ -83,14 +82,15 @@ def delete_blog_by_id(id, db: Session = Depends(get_db)):
     
     return 'Blog post successfully deleted!'
     
+
     
 
-@app.post('/user', status_code=status.HTTP_201_CREATED)
+@app.post('/user', status_code=status.HTTP_201_CREATED, response_model=ShowUser)
 def create_user(request: User, db: Session = Depends(get_db)):
     new_user = models.User(
         name=request.name,
         email=request.email,
-        password=request.password
+        password=Hash.bcrypt(request.password)
     )
     
     db.add(new_user)

@@ -16,9 +16,12 @@ class User(BaseModel):
     name: str
     email: str
     password: str
+    
+    
+class ShowUser(BaseModel):
+    name: str
+    email: str
 
-# class User(BaseModel):
-#     name: str
-#     email: str
-#     password: str
-#     play: str
+    class Config():
+        orm_mode = True
+
