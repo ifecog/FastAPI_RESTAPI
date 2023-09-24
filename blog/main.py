@@ -85,8 +85,32 @@ def delete_blog_by_id(id, db: Session = Depends(get_db)):
     
     
 
-# users
 @app.post('/user', status_code=status.HTTP_201_CREATED)
-def create_user(request: User):
-    return request
+def create_user(request: User, db: Session = Depends(get_db)):
+    new_user = models.User(
+        name=request.name,
+        email=request.email,
+        password=request.password
+    )
+    
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    return new_user
+
+# users
+# @app.post('/user', status_code=status.HTTP_201_CREATED)
+# def create_user(request: User, db: Session = Depends(get_db)):
+#     new_user = models.User(
+#         name=request.name,
+#         email=request.email,
+#         password=request.password
+#     )
+    
+#     db.add(new_user)
+#     db.commit()
+#     db.refresh(new_user)
+    
+#     return new_user
 
