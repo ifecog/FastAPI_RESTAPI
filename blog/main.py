@@ -24,7 +24,8 @@ models.Base.metadata.create_all(bind=engine)
 def create_blog(request: Blog, db: Session = Depends(get_db)):
     new_blog = models.Blog(
         title=request.title,
-        body=request.body
+        body=request.body,
+        user_id=1
     )
     
     db.add(new_blog)
