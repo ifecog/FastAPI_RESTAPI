@@ -1,10 +1,14 @@
+from datetime import datetime, timedelta
+
 from fastapi import APIRouter, Depends, HTTPException, status
+
 from sqlalchemy.orm import Session
 
 from .. import models
 from ..database import get_db
 from blog.schemas import Login
 from blog.hashing import Hash
+from blog.token import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 
 
 router = APIRouter(
@@ -25,4 +29,6 @@ def login(request: Login, db: Session = Depends(get_db)):
             detail='Incorrect password!'
         )        
         
-    return user
+    access_token = create_access_token(data={"sub": user.email})
+    
+    return {"access_token": access_token, "token_type": "bearer"}
