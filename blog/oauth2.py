@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from blog.token import verify_token
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
@@ -15,4 +15,4 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         headers={"WWW-Authenticate": "Bearer"},
     )
     
-    return verify_token(token, credentials_exception)
+, 

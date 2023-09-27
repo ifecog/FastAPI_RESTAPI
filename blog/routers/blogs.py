@@ -14,12 +14,12 @@ router = APIRouter(
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def create_blog(request: Blog, db: Session = Depends(get_db)):
+def create_blog(request: Blog, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return blog.create(request, db)
 
 
 @router.get('/', response_model=list[ShowBlog])
-def get_blogs(db: Session = Depends(get_db), get_current_user: User = Depends(get_current_user)):
+def get_blogs(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return blog.get_all(db)
 
 
