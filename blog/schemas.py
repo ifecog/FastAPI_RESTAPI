@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 # from typing import List       
@@ -46,4 +48,4 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    email: str | None = None

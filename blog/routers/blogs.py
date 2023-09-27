@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 
 from .. import models
 from ..database import get_db
-from blog.schemas import ShowBlog, Blog
+from ..oauth2 import get_current_user
+from blog.schemas import ShowBlog, Blog, User
 from blog.repository import blog
 
 router = APIRouter(
@@ -18,7 +19,7 @@ def create_blog(request: Blog, db: Session = Depends(get_db)):
 
 
 @router.get('/', response_model=list[ShowBlog])
-def get_blogs(db: Session = Depends(get_db)):
+def get_blogs(db: Session = Depends(get_db), get_current_user: User = Depends(get_current_user)):
     return blog.get_all(db)
 
 
